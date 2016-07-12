@@ -128,6 +128,7 @@
 
 <div class="col-sm-2 sidenav">
     <ul class="nav nav-pills nav-stacked">
+        <li><a href="controleur.php?action=logout" class="GestRH">Déconnexion</a></li>
         <li><a href="index.php?page=LT" class="GestRH">Accueil</a></li>
     </ul><br>
     <h3> Rechercher un test : </h3>
@@ -175,7 +176,7 @@
                             <?php
                             $p = Listcand();
                             foreach ($p as $dataP){
-                                echo '<option class="list" value="' . $dataP['Nom'] . ' - ' . $dataP['Prenom'] . ' - ' . $dataP['id_candidat'] . '">';
+                                 echo '<option class="list" value="' . $dataP['Nom'] . ' - ' . $dataP['Prenom'] . ' - ' . $dataP['id_candidat'] . '">';
                             }
                             ?>
                         </datalist>

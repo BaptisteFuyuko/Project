@@ -46,6 +46,12 @@ if ($action = valider("action", 'POST') OR $action = valider("action", 'GET'))
             }
             break;
 
+        case 'logout' :
+            // On supprime juste la session
+            session_destroy();
+            rediriger("index.php","page=L");
+            break;
+
         case 'modifRH' :
             $p = getlogall();
             $id = $_SESSION['idmodif'];
@@ -148,17 +154,17 @@ if ($action = valider("action", 'POST') OR $action = valider("action", 'GET'))
 
         case 'listbycat'  :
             $value = valider("value",'GET');
-            rediriger("index.php","page=LRH&value=$value");
+            rediriger("index.php","page=LTCAT&value=$value");
             break;
 
         case 'listbytest'  :
             $id = valider("id",'GET');
-            rediriger("index.php","page=LRH&id=$id");
+            rediriger("index.php","page=LTT&id=$id");
             break;
 
         case 'listbycand'  :
             $id = valider("id",'GET');
-            rediriger("index.php","page=LRH&id=$id");
+            rediriger("index.php","page=LTCAN&id=$id");
             break;
     }
 }

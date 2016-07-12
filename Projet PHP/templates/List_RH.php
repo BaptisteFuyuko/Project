@@ -36,6 +36,7 @@
     h1 {
         font-size: 4.5vh;
     }
+
     .tabcontent {
         max-height: 70vh !important;
         overflow: auto;

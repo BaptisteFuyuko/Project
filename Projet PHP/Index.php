@@ -11,6 +11,10 @@ $pagesOK['LRH'] = 'templates/List_RH.php';
 $pagesOK['ARH'] = 'templates/Ajout_RH.php';
 $pagesOK['LT'] = 'templates/Accueil.php';
 $pagesOK['L'] = 'templates/login.php';
+$pagesOK['LTCAT'] = 'templates/listbycat.php';
+$pagesOK['LTT'] = 'templates/listbytest.php';
+$pagesOK['LTCAN'] = 'templates/listbycand.php';
+$pagesOK['RT'] = 'templates/resultat.php';
 
 //Page par defaut
 if (valider('connecte','SESSION'))
@@ -28,7 +32,7 @@ if(!empty($_GET['page'])
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 	<head>
 		<meta charset="UTF-8">
 		<title>Test Sogeti</title>
@@ -43,6 +47,7 @@ if(!empty($_GET['page'])
 
 		<!-- Latest compiled JavaScript -->
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
 	</head>
 	<body>
