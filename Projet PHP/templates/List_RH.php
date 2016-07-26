@@ -5,8 +5,8 @@
 <style type="text/css">
     h1 {
         color: #ef4527;
-        margin-top: 40px;
-        margin-bottom: 60px;
+        margin-top: 3vh;
+        margin-bottom: 5vh;
     }
 
     thead{

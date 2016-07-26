@@ -39,6 +39,35 @@ function getlogall() {
 	return parcoursRs(SQLSelect($SQL));
 }
 
+function getselecteduserinfo($id) {
+	$SQL = "SELECT * FROM user WHERE id = '$id'";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function Listnomtest(){
 	$SQL = "SELECT Nom, Categorie, id_test from test ORDER BY Nom";
 	return parcoursRs(SQLSelect($SQL));
@@ -53,6 +82,24 @@ function Listcand(){
 	$SQL = "SELECT Nom, Prenom, id_candidat from candidat ORDER BY Nom";
 	return parcoursRs(SQLSelect($SQL));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function Listingbycat($cat) {
 	$SQL = "SELECT candidat.Nom AS Nom, candidat.Prenom AS Prenom, test.Nom AS Nom_Test, passer.Date_exe AS Date_exe, resultat.Score AS Score, resultat.id_resultat as id
@@ -90,8 +137,33 @@ function Listingbycand($id) {
 	return parcoursRs(SQLSelect($SQL));
 }
 
-function getnom($id){
-	$SQL = "SELECT Nom from test WHERE id_test = '$id'";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function getnomtestbyresult($id){
+	$SQL = "SELECT Nom from test, resultat 
+			WHERE test.id_test = resultat.id_test
+			AND resultat.id_resultat = '$id'";
 	return parcoursRs(SQLSelect($SQL));
 }
 
@@ -100,11 +172,131 @@ function getnomprenom($id){
 	return parcoursRs(SQLSelect($SQL));
 }
 
-function getquestionreponse($id) {
-	$SQL = "SELECT question.id_question as id, question.Intitule as Intitule_Question, reponse.Intitule as Intitule_reponse, reponse.Juste as Juste
+
+function getidtestfromresult($id){
+	$SQL = "SELECT id_test as id from resultat WHERE id_resultat = '$id'";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function getquestionreponse_idresult($idresult) {
+	$idtest = getidtestfromresult($idresult)[0]['id'];
+	$SQL = "SELECT question.id_question as id, reponse.id_reponse as id_rep, question.Intitule as Intitule_Question, reponse.Intitule as Intitule_reponse, reponse.Juste as Juste
 			FROM question, reponse
-			WHERE question.id_test = $id
+			WHERE question.id_test = '$idtest'
 			AND reponse.id_question = question.id_question";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function getquestionreponse_idtest($idtest){
+	$SQL = "SELECT question.id_question as id, reponse.id_reponse as id_rep, question.Intitule as Intitule_Question, reponse.Intitule as Intitule_reponse
+			FROM question, reponse
+			WHERE question.id_test = '$idtest'
+			AND reponse.id_question = question.id_question";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function getscore($id) {
+	$SQL = "SELECT Score from resultat WHERE id_resultat = '$id'";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function getidcandfromresult($id){
+	$SQL = "SELECT id_candidat as id from resultat WHERE id_resultat = '$id'";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function getcand($id) {
+	$idcand = getidcandfromresult($id)[0]['id'];
+	$SQL = "SELECT Nom, Prenom from candidat WHERE id_candidat = '$idcand'";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function getreponsescand($id) {
+	$idcand = getidcandfromresult($id)[0]['id'];
+	$SQL = "SELECT reponse.id_reponse as id_rep from reponse, repondre, question, test, resultat
+			WHERE repondre.id_candidat = '$idcand'
+			AND repondre.id_reponse = reponse.id_reponse
+			AND reponse.id_question = question.id_question
+			AND question.id_test = test.id_test
+			AND test.id_test = resultat.id_test
+			AND resultat.id_resultat = '$id'";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function getcandbyemail($email) {
+	$SQL = "SELECT Nom, Prenom, id_candidat AS id FROM candidat WHERE E_Mail = '$email'";
+	if (SQLSelect($SQL) == false)
+		return false;
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function createnewcand($nom, $prenom, $email) {
+	$SQL = "INSERT INTO candidat(Nom, Prenom, E_Mail) VALUES ('$nom', '$prenom', '$email')";
+	return SQLInsert($SQL);
+}
+
+function testdone($cand, $test) {
+	$SQL = "SELECT * FROM passer WHERE id_candidat = '$cand' AND id_test = '$test'";
+	if (SQLSelect($SQL)==false)
+		return false;
+	else return true;
+}
+
+function updatetest($idcand, $idtest) {
+	$SQL = "UPDATE passer SET Date_exe = CURDATE() WHERE id_test = '$idtest' AND id_candidat = '$idcand'";
+	SQLUPDATE($SQL);
+	$SQL = "DELETE FROM repondre USING repondre INNER JOIN reponse INNER JOIN question INNER JOIN test 
+			WHERE repondre.id_candidat = '$idcand' 
+			AND repondre.id_reponse = reponse.id_reponse
+			AND reponse.id_question = question.id_question
+			AND question.id_test = test.id_test
+			AND test.id_test = '$idtest'";
+	SQLDelete($SQL);
+}
+
+function addpasser($idcand, $idtest) {
+	$SQL = "INSERT INTO passer(Date_exe, id_candidat, id_test) VALUES (CURDATE(),'$idcand','$idtest')";
+	SQLInsert($SQL);
+}
+
+function getnomtest($id){
+	$SQL = "SELECT Nom FROM test WHERE id_test = '$id'";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function getquestion_idtest($id) {
+	$SQL = "SELECT id_question FROM question WHERE id_test = '$id'";
 	return parcoursRs(SQLSelect($SQL));
 }
 ?>

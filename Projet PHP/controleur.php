@@ -148,10 +148,6 @@ if ($action = valider("action", 'POST') OR $action = valider("action", 'GET'))
             }
             break;
 
-        case 'lancertest'  :
-
-            break;
-
         case 'listbycat'  :
             $value = valider("value",'GET');
             rediriger("index.php","page=LTCAT&value=$value");
@@ -166,7 +162,66 @@ if ($action = valider("action", 'POST') OR $action = valider("action", 'GET'))
             $id = valider("id",'GET');
             rediriger("index.php","page=LTCAN&id=$id");
             break;
+        
+        case 'lancertest' :
+            if (valider("nom",'POST') AND valider("prenom",'POST') AND valider("email",'POST') AND valider("test",'POST')) {
+                $nom = valider("nom", 'POST');
+                $prenom = valider("prenom", 'POST');
+                $email = valider("email", 'POST');
+                $idtest = preg_split("/ - /",valider("test", 'POST'))[2];
+                $donnees = getcandbyemail($email);
+                $idcand = $donnees[0]['id'];
+                if ($donnees) {
+                    if ($donnees[0]['Nom'] != $nom OR $donnees[0]['Prenom'] != $prenom) {
+                        $nom = valider("nom", 'POST');
+
+                        $prenom = valider("prenom", 'POST');
+
+                        $email = valider("email", 'POST');
+
+                        rediriger("index.php","page=LT&aemail=used&nom=$nom&prenom=$prenom&email=$email");
+                    }
+                    else {
+                        if(testdone($idcand,$idtest)){
+                            updatetest($idcand,$idtest);
+                        }
+                        else {
+                            addpasser($idcand,$idtest);
+                        }
+                        $_SESSION['idcandidat'] = $idcand;
+                        $_SESSION['idtest'] = $idtest;
+
+                        rediriger("index.php", "page=T");
+                    }
+                } else {
+                    $_SESSION['idcandidat'] = $idcand;
+                    $_SESSION['idtest'] = $idtest;
+                    $idcand = createnewcand($nom, $prenom, $email);
+                    addpasser($idcand,$idtest);
+
+                    rediriger("index.php", "page=T");
+                }
+            }
+            else {
+                if (valider("nom",'POST')==false)
+                    $nom= 'false';
+                else $nom = valider("nom",'POST');
+
+                if (valider("prenom",'POST')==false)
+                    $prenom= 'false';
+                else $prenom = valider("prenom",'POST');
+
+                if (valider("email",'POST')==false)
+                    $email = 'false';
+                else $email = valider("email",'POST');
+
+                if (valider("test",'POST')==false)
+                    $test = 'false';
+                else $test = 'true';
+
+                rediriger("index.php","page=LT&ERR=empty&nom=$nom&prenom=$prenom&email=$email&test=$test");
+            }
+            break;
     }
 }
-
 ?>

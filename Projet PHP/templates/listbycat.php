@@ -38,12 +38,14 @@ include("Navbar.php");
     .table-striped>tbody>tr:nth-child(even)>th {
         background-color: #888888;
         color: black;
+        cursor: pointer;
     }
 
     .table-striped>tbody>tr:nth-child(odd)>td,
     .table-striped>tbody>tr:nth-child(odd)>th {
         background-color: #ef4527;
         color: black;
+        cursor: pointer;
     }
 
 </style>
@@ -69,7 +71,7 @@ include("Navbar.php");
                 //Affiche tous les RH de la base de données
                 foreach ($p as $dataP)
                 {
-                    echo '<tr value="' . $dataP['id'] . '">';
+                    echo '<tr onclick="document.location=\'index.php?page=RT&id=' . $dataP['id'] . '\'" onMouseOver="this.style.opacity=\'0.5\';"onMouseOut ="this.style.opacity = \'1\'"> ';
                     echo '<td>' . $dataP['Prenom'] . '</td>';
                     echo '<td>' . $dataP['Nom'] . '</td>';
                     echo '<td>' . $dataP['Nom_Test'] . '</td>';

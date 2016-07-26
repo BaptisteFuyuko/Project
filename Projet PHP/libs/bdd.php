@@ -10,14 +10,4 @@ $BDD_user="root";
 $BDD_password="";
 $BDD_base="test_technique";
 
-try
-{
-    $bdd = new PDO('mysql:host=localhost;dbname=test_technique;charset=utf8', 'root', '',
-        array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-}
-catch(Exception $e)
-{
-    die('Erreur : '.$e->getMessage());
-}
-
 ?>

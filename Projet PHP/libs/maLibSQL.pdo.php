@@ -133,7 +133,10 @@ function SQLSelect($sql)
  	global $BDD_password;
 
 	try {
-		$dbh = new PDO("mysql:host=$BDD_host;dbname=$BDD_base", $BDD_user, $BDD_password);
+		$dbh = new PDO("mysql:host=$BDD_host;dbname=$BDD_base", $BDD_user, $BDD_password, array(
+			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+			PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+		));
 	} catch (PDOException $e) {
 		die("<font color=\"red\">SQLSelect: Erreur de connexion : " . $e->getMessage() . "</font>");
 	}
@@ -167,10 +170,5 @@ function parcoursRs($result)
 
 	return $tab;
 }
-
-
-
-
-
 
 ?>

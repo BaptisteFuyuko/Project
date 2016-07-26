@@ -15,10 +15,11 @@ $pagesOK['LTCAT'] = 'templates/listbycat.php';
 $pagesOK['LTT'] = 'templates/listbytest.php';
 $pagesOK['LTCAN'] = 'templates/listbycand.php';
 $pagesOK['RT'] = 'templates/resultat.php';
+$pagesOK['T'] = 'templates/test.php';
 
 //Page par defaut
 if (valider('connecte','SESSION'))
-$page = 'LT';
+	$page = 'LT';
 else {
     $page = 'L';
 }
@@ -47,7 +48,8 @@ if(!empty($_GET['page'])
 
 		<!-- Latest compiled JavaScript -->
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
 	</head>
 	<body>

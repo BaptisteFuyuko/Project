@@ -1,10 +1,9 @@
 <?php
     include("Navbar.php");
     //Récupère les information du user sélectionné
-    $req = $bdd->prepare('SELECT * FROM user WHERE id= :idRH');
-    $req->execute(array('idRH' => $_GET['id']));
-    $donnees = $req->fetch();
+    $donnees = getselecteduserinfo($_GET['id']);
     $_SESSION['idmodif'] = $_GET['id'];
+    $bdd = null;
 ?>
 
 <style type="text/css">
@@ -48,7 +47,7 @@
 <div class="container">
     <div class="col-sm-2"></div>
     <div class="col-sm-10">
-        <h1>Modification de <?php echo $donnees['Prenom'];?> <?php echo $donnees['Nom']; ?></h1>
+        <h1>Modification de <?php echo $donnees[0]['Prenom'];?> <?php echo $donnees[0]['Nom']; ?></h1>
         <form class="form-horizontal" role="form" method="post" action="controleur.php" style="
         max-height: 70vh !important;
         overflow: auto;
@@ -67,7 +66,7 @@
             ">
                 <label class="control-label col-sm-4" for="nom">*Nom:</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" name="nom" id="nom" value="<?php echo $donnees['Nom'] ?>">
+                    <input type="text" class="form-control" name="nom" id="nom" value="<?php echo $donnees[0]['Nom'] ?>">
                 </div>
             </div>
 
@@ -83,7 +82,7 @@
             ">
                 <label class="control-label col-sm-4" for="prenom">*Prénom:</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" name="prenom" id="prenom" value="<?php echo $donnees['Prenom'] ?>">
+                    <input type="text" class="form-control" name="prenom" id="prenom" value="<?php echo $donnees[0]['Prenom'] ?>">
                 </div>
             </div>
 
@@ -99,7 +98,7 @@
             ">
                 <label class="control-label col-sm-4" for="bu">*BU d'origine:</label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" name="BU" id="bu" value="<?php echo $donnees['BU_origine'] ?>">
+                    <input type="text" class="form-control" name="BU" id="bu" value="<?php echo $donnees[0]['BU_origine'] ?>">
                 </div>
             </div>
 
@@ -126,7 +125,7 @@
             ">
                 <label class="control-label col-sm-4" for="email">*Login:</label>
                 <div class="col-sm-8">
-                    <input type="email" class="form-control" name="login" id="email" value="<?php echo $donnees['Login'] ?>">
+                    <input type="email" class="form-control" name="login" id="email" value="<?php echo $donnees[0]['Login'] ?>">
                 </div>
             </div>
 
