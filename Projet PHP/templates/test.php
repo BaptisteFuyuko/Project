@@ -8,37 +8,54 @@ $q = [
 ?>
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function() {
         $(".btn-right").click(function () {
-            $(".form-group:visible").hide('slide', {direction: 'left'}, 1400);
-            $(".form-group:visible").next().stop().show('slide', {direction: 'left'}, 1400);
+            if (!$(".btn-right").hasClass('Unclickable')) {
+                $(".form-group:visible").fadeOut();
+                $(".form-group:visible").next().fadeIn();
+
+                if ($(".form-group:visible").attr("value") == $(".form-group:first").attr("value"))
+                    $(".div-btn-left > *").removeClass("Unclickable");
+                if ($(".form-group:visible").attr("value") == $(".form-group:last").prev().attr("value")) {
+                    $(".div-btn-right > .btn-right").addClass("Unclickable");
+                    $(".fin").css('display','block');
+                }
+            }
         });
 
         $(".btn-left").click(function () {
-            $(".form-group:visible").hide('slide', {direction: 'right'}, 1400);
-            $(".form-group:visible").prev().stop().show('slide', {direction: 'left'}, 1400);
+            if (!$(".btn-left").hasClass('Unclickable')) {
+                $(".form-group:visible").fadeOut();
+                $(".form-group:visible").prev().fadeIn();
+
+                if ($(".form-group:visible").attr("value") == $(".form-group:first").attr("value"))
+                    $(".div-btn-left > *").addClass("Unclickable");
+                if ($(".form-group:visible").attr("value") == ($(".form-group:last").attr("value") - 1))
+                    $(".div-btn-right > *").removeClass("Unclickable");
+                    $(".fin").css('display','none');
+            }
         });
-        if ($(".form-group:visible").val()== 1)
-            alert('1');
+        $(".btn-left, .btn-left > *").addClass("Unclickable");
     });
 </script>
 
 <style type="text/css">
     h1 {
         color: #ef4527;
-        margin-top: 5vh;
+        margin-top: 3vh;
         margin-bottom: 3vh;
         font-size: 6vh;
         text-align: center;
     }
 
     .form-group {
-        margin-top: 6vh;
-        height: 100%;
+        margin-top: 4vh;
+        height: 70vh;
+        vertical-align: middle;
     }
 
     .question {
-        font-size: 3vh;
+        font-size: 4vh;
         margin-bottom: 6vh;
     }
 
@@ -66,7 +83,7 @@ $q = [
     [type="checkbox"]:not(:checked) + label,
     [type="checkbox"]:checked + label {
         font-size: 2.5vh;
-        height: 10vh;
+        height: 8vh;
         cursor: pointer;    /* affiche un curseur adapté */
         display: flex; /* contexte sur le parent */
         flex-direction: column; /* direction d'affichage verticale */
@@ -83,46 +100,80 @@ $q = [
         background-color: #F05F46;
     }
 
-    .btn-left {
+    .div-btn-left {
         text-align: right;
-        height: 65vh;
+        height: 70vh;
     }
 
-    .btn-right {
+    .div-btn-right {
         text-align: left;
-        height: 65vh;
+        height: 70vh;
     }
 
-    .glyphicon-menu-left {
+    .btn-left {
         font-size: 15vh;
         color: #ef4527;
         height: 30vh;
         padding-top: 7.5vh;
-        margin-top: 17.5vh;
+        margin-top: 20vh;
         cursor: pointer;
         background-color: white;
         background: linear-gradient(to right, rgba(255,255,255,0), white);
         transition: background-color 0.3s;
     }
 
-    .glyphicon-menu-right {
+    .btn-right {
         font-size: 15vh;
-        color: #A1A09B;
+        color: #ef4527;
         height: 30vh;
         padding-top: 7.5vh;
-        margin-top: 17.5vh;
+        margin-top: 20vh;
         cursor: pointer;
         background-color: white;
         background: linear-gradient(to left, rgba(255,255,255,0), white);
         transition: background-color 0.3s;
     }
 
-    .glyphicon-menu-left:hover {
+    .btn-left:hover {
         background-color: #A1A09B;
     }
 
-    .glyphicon-menu-right:hover {
-        background-color: #F05F46;
+    .btn-right:hover {
+        background-color: #A1A09B;
+    }
+
+    .Unclickable {
+        display: none;
+        cursor: default;
+    }
+
+    .fin {
+        display: none;
+        font-size: 15vh;
+        color: #ef4527;
+        height: 30vh;
+        width: 17vh;
+        padding-top: 7.5vh;
+        margin-top: 20vh;
+        cursor: pointer;
+        background-color: white;
+        background: linear-gradient(to left, rgba(255,255,255,0), white);
+        transition: background-color 0.3s;
+    }
+
+    .fin:hover {
+        background-color: #A1A09B;
+    }
+
+    #fin {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 20;
+        font-size: 0px;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
     }
 </style>
 
@@ -130,35 +181,41 @@ $q = [
     <div class="col-sm-12">
         <h1> <?php echo $nom[0]['Nom'] ?> </h1>
     </div>
-    <div class="col-sm-1"></div>
-    <div class="col-sm-2 btn-left"><span class="glyphicon glyphicon-menu-left"></span></div>
-    <div class="col-sm-6">
-        <div class="col-sm-12" style="overflow: hidden; height: 65vh !important; text-align: center;">
-            <?php
-            $p = getquestionreponse_idtest($id);
-            $idquestion = getquestion_idtest($id);
-            $i = 0;
-            foreach ($p as $dataP) {
-                if ($idquestion[$i]['id_question'] == $dataP['id']){
-                    if ($i!=0)
-                        echo '</div>';
-                    echo '<div class="form-group ' . ($i+1) . '" value="' . $dataP['id'] . '"';
-                    if ($i!=0)
-                        echo 'style="display : none;"';
-                    echo '>';
-                    echo '<span class="question">' . ($i+1) . ') ' . $dataP['Intitule_Question'] . '</span>';
-                    echo '<br><br>';
-                    $lettre = 0;
-                    $i++;
+    <div class="col-sm-2 div-btn-left"><span class="glyphicon glyphicon-menu-left btn-left"></span></div>
+    <form class="form-horizontal" role="form" method="post" action="controleur.php">
+        <div class="col-sm-8">
+            <div class="col-sm-12 form-contain" style="overflow: hidden; height: 70vh !important; text-align: center;">
+                <?php
+                $p = getquestionreponse_idtest($id);
+                $idquestion = getquestion_idtest($id);
+                $i = 0;
+                foreach ($p as $dataP) {
+                    if (isset($idquestion[$i]['id_question']) AND $idquestion[$i]['id_question'] == $dataP['id']){
+                        if ($i!=0)
+                            echo '</div>';
+                        echo '<div class="form-group ' . ($i+1) . '" value="' . $dataP['id'] . '"';
+                        if ($i!=0)
+                            echo 'style="display: none;"';
+                        echo '>';
+                        echo '<span class="question">' . ($i+1) . ') ' . $dataP['Intitule_Question'] . '</span>';
+                        echo '<br><br>';
+                        $lettre = 0;
+                        $i++;
+                    }
+                    if( $dataP['Multiple'] == 1)
+                        echo '<input type="checkbox" name="' . $dataP["id"] . '[]" value="' . $dataP["id_rep"] . '" class="reponse" id="' . $dataP["id_rep"] . '"/> <label class="col-sm-12" for="' . $dataP["id_rep"] . '">' . $q[$lettre] . ') ' . $dataP["Intitule_reponse"] . '</label>';
+                    else
+                        echo '<input type="radio" name="' . $dataP["id"] . '" value="' . $dataP["id_rep"] . '" class="reponse" id="' . $dataP["id_rep"] . '"/> <label class="col-sm-12" for="' . $dataP["id_rep"] . '">' . $q[$lettre] . ') ' . $dataP["Intitule_reponse"] . '</label>';
+                    echo '<br>';
+                    $lettre++;
                 }
-                echo '<input type="radio" name="' . $dataP["id"] . '" class="reponse" id="' . $dataP["id_rep"] . '"/> <label class="col-sm-12" for="' . $dataP["id_rep"] . '">' . $q[$lettre] . ') ' . $dataP["Intitule_reponse"] . '</label>';
-                echo '<br>';
-                $lettre++;
-            }
-            echo '</div>';
-            ?>
+                echo '</div>';
+                ?>
+            </div>
         </div>
-    </div>
-    <div class="col-sm-2 btn-right"><span class="glyphicon glyphicon-menu-right"></span></div>
-    <div class="col-sm-1"></div>
+        <div class="col-sm-2 div-btn-right">
+            <span class="glyphicon glyphicon-menu-right btn-right"></span>
+            <span class="glyphicon glyphicon-ok fin"><input type="submit" name="action" value="fin_test" id="fin"/></span>
+        </div>
+    </form>
 </div>

@@ -180,18 +180,20 @@ function getidtestfromresult($id){
 
 function getquestionreponse_idresult($idresult) {
 	$idtest = getidtestfromresult($idresult)[0]['id'];
-	$SQL = "SELECT question.id_question as id, reponse.id_reponse as id_rep, question.Intitule as Intitule_Question, reponse.Intitule as Intitule_reponse, reponse.Juste as Juste
+	$SQL = "SELECT reponse.id_question as id, reponse.id_reponse as id_rep, question.Intitule as Intitule_Question, reponse.Intitule as Intitule_reponse, reponse.Juste as Juste
 			FROM question, reponse
 			WHERE question.id_test = '$idtest'
-			AND reponse.id_question = question.id_question";
+			AND reponse.id_question = question.id_question
+			ORDER BY reponse.id_question";
 	return parcoursRs(SQLSelect($SQL));
 }
 
 function getquestionreponse_idtest($idtest){
-	$SQL = "SELECT question.id_question as id, reponse.id_reponse as id_rep, question.Intitule as Intitule_Question, reponse.Intitule as Intitule_reponse
+	$SQL = "SELECT question.id_question as id, reponse.id_reponse as id_rep, question.Intitule as Intitule_Question, reponse.Intitule as Intitule_reponse, question.Multiple as Multiple
 			FROM question, reponse
 			WHERE question.id_test = '$idtest'
-			AND reponse.id_question = question.id_question";
+			AND reponse.id_question = question.id_question
+			ORDER BY reponse.id_question";
 	return parcoursRs(SQLSelect($SQL));
 }
 
@@ -219,7 +221,16 @@ function getreponsescand($id) {
 			AND reponse.id_question = question.id_question
 			AND question.id_test = test.id_test
 			AND test.id_test = resultat.id_test
-			AND resultat.id_resultat = '$id'";
+			AND resultat.id_resultat = '$id'
+			ORDER BY question.id_question";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function getdate_exe($id_result){
+	$SQL = "SELECT passer.Date_exe FROM passer, resultat
+			WHERE passer.id_test = resultat.id_test
+			AND passer.id_candidat = resultat.id_candidat
+			AND resultat.id_resultat = '$id_result'";
 	return parcoursRs(SQLSelect($SQL));
 }
 
@@ -297,6 +308,51 @@ function getnomtest($id){
 
 function getquestion_idtest($id) {
 	$SQL = "SELECT id_question FROM question WHERE id_test = '$id'";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function insertrepondre($id_rep, $id_cand){
+	$SQL = "INSERT INTO repondre(id_reponse, id_candidat) VALUES ('$id_rep', '$id_cand')";
+	SQLInsert($SQL);
+}
+
+function getrepandM($id_test) {
+	$SQL = "SELECT reponse.id_reponse as id, question.Multiple as Multiple, reponse.id_question as id_question FROM reponse, question
+			WHERE reponse.Juste = 1
+			AND reponse.id_question = question .id_question
+			AND question.id_test = '$id_test'
+			ORDER BY reponse.id_question";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function compare_qcm($reponses, $id_question) {
+	$SQL = "SELECT id_reponse FROM reponse WHERE Juste = 1 AND id_question = '$id_question'";
+	$correct = parcoursRs(SQLSelect($SQL));
+	$cursor = 0;
+	foreach ($reponses as $dataP){
+		if (isset($correct[$cursor])){
+			if ($dataP != $correct[$cursor])
+				return 1;
+		}
+		else
+			return 1;
+		$cursor++;
+	}
+	return 0;
+}
+
+function savetest($score, $id_cand, $id_test) {
+	$SQL = "INSERT INTO resultat(Score, id_test, id_candidat) VALUES ('$score', '$id_test', '$id_cand')";
+	return SQLInsert($SQL);
+}
+
+function nbquestion_idtest($id_test) {
+	$SQL = "SELECT COUNT(id_question) as nb_question FROM question WHERE id_test='$id_test'";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function getidquestion_idrep($id_rep){
+	$SQL = "SELECT id_question as id FROM reponse WHERE id_reponse='$id_rep'";
 	return parcoursRs(SQLSelect($SQL));
 }
 ?>

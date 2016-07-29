@@ -8,6 +8,7 @@ $q = [
 $score = getscore($_GET['id']);
 $cand = getcand($_GET['id']);
 $reponses = getreponsescand($_GET['id']);
+$date = getdate_exe($_GET['id'])[0]['Date_exe'];
 ?>
 
 <style type="text/css">
@@ -43,25 +44,26 @@ $reponses = getreponsescand($_GET['id']);
     }
 </style>
 
-<div class="container">
+<div class="container-fluid">
     <div class="col-sm-2"></div>
     <div class="col-sm-10">
         <div class="col-sm-6">
             <h1> <?php echo $nom[0]['Nom'] ?> </h1>
-            <h2> <?php echo 'Passé par ' . $cand[0]['Prenom'] . ' ' . $cand[0]['Nom']; ?> </h2>
+            <h2> <?php echo 'Passé par ' . $cand[0]['Prenom'] . ' ' . $cand[0]['Nom'] . ' le ' . $date; ?> </h2>
         </div>
         <div class="col-sm-6">
             <h1 id="score"> <?php echo $score[0]['Score'] . ' sur 20' ?> </h1>
         </div>
         <div class="col-sm-12" style="overflow: auto; max-height: 70vh !important;">
             <?php
-            $p = getquestionreponse_idresult($id, true);
-            $i = 1;
+            $p = getquestionreponse_idresult($id);
+            $idquestion = getquestion_idtest($id);
+            $i = 0;
             $cursrep = 0;
             foreach ($p as $dataP) {
                 echo '<div class="cont-question">';
-                if ($i == $dataP['id']){
-                    echo '<span class="question">' . $i . ') ' . $dataP['Intitule_Question'] . '</span>';
+                if (isset($idquestion[$i]['id_question']) AND $idquestion[$i]['id_question'] == $dataP['id']){
+                    echo '<span class="question">' . ($i+1) . ') ' . $dataP['Intitule_Question'] . '</span>';
                     echo '<br><br>';
                     $lettre = 0;
                     $i++;

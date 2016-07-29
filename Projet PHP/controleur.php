@@ -194,9 +194,9 @@ if ($action = valider("action", 'POST') OR $action = valider("action", 'GET'))
                         rediriger("index.php", "page=T");
                     }
                 } else {
+                    $idcand = createnewcand($nom, $prenom, $email);
                     $_SESSION['idcandidat'] = $idcand;
                     $_SESSION['idtest'] = $idtest;
-                    $idcand = createnewcand($nom, $prenom, $email);
                     addpasser($idcand,$idtest);
 
                     rediriger("index.php", "page=T");
@@ -221,6 +221,47 @@ if ($action = valider("action", 'POST') OR $action = valider("action", 'GET'))
 
                 rediriger("index.php","page=LT&ERR=empty&nom=$nom&prenom=$prenom&email=$email&test=$test");
             }
+            break;
+        case 'fin_test' :
+            $id_cand = $_SESSION['idcandidat'];
+            $score = nbquestion_idtest($_SESSION['idtest'])[0]['nb_question'];
+            $max = $score;
+            $multiple = [];
+            $rep = [];
+            $q = 0;
+            foreach ($_POST as $POST){
+                if ($POST != 'fin_test' AND is_array($POST)){
+                    array_push($rep, $POST);
+                    foreach ($POST as $reponse) {
+                        insertrepondre($reponse, $id_cand);
+                    }
+                }
+                elseif ($POST != 'fin_test'){
+                    insertrepondre($POST, $id_cand);
+                    array_push($rep, $POST);
+                }
+            }
+            $p = getrepandM($_SESSION['idtest']);
+            $cursor = 0;
+            foreach ($p as $dataP) {
+                $idqrep = getidquestion_idrep($rep[$cursor])[0]['id'];
+                if ($dataP['Multiple'] == 0 AND $dataP['id_question']==$idqrep){
+                    if ($dataP['id'] != $rep[$cursor]){
+                        $score--;
+                        $cursor++;
+                    }
+                }
+                elseif($dataP['Multiple'] == 1) {
+                    if($q != $dataP['id_question']) {
+                        $q = $dataP['id_question'];
+                        $score = $score - compare_qcm($rep[$cursor], $dataP['id_question']);
+                        $cursor++;
+                    }
+                }
+            }
+            $score = ($score * 20)/$max;
+            $id_result = savetest($score, $id_cand, $_SESSION['idtest']);
+            rediriger("index.php","page=RT&id=$id_result");
             break;
     }
 }
