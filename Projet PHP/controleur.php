@@ -226,7 +226,6 @@ if ($action = valider("action", 'POST') OR $action = valider("action", 'GET'))
             $id_cand = $_SESSION['idcandidat'];
             $score = nbquestion_idtest($_SESSION['idtest'])[0]['nb_question'];
             $max = $score;
-            $multiple = [];
             $rep = [];
             $q = 0;
             foreach ($_POST as $POST){
@@ -242,20 +241,40 @@ if ($action = valider("action", 'POST') OR $action = valider("action", 'GET'))
                 }
             }
             $p = getrepandM($_SESSION['idtest']);
+            /*
+             * $p :
+             *  'id' = id de la réponse
+             *  'id_question' = id de la question
+             *  'Multiple' = Booléen distinquant les questions à choix multiples
+             */
             $cursor = 0;
             foreach ($p as $dataP) {
-                $idqrep = getidquestion_idrep($rep[$cursor])[0]['id'];
-                if ($dataP['Multiple'] == 0 AND $dataP['id_question']==$idqrep){
-                    if ($dataP['id'] != $rep[$cursor]){
-                        $score--;
+                if(isset($rep[$cursor])) {
+                    $idqrep = getidquestion_idrep($rep[$cursor])[0]['id'];
+                    if ($dataP['Multiple'] == 0 AND $dataP['id_question'] == $idqrep) {
+                        if ($dataP['id'] != $rep[$cursor])
+                            $score--;
                         $cursor++;
+                    } elseif ($dataP['Multiple'] == 1){
+                        if ($dataP['id_question'] == $idqrep) {
+                            $q = $dataP['id_question'];
+                            $sous = compare_qcm($rep[$cursor], $dataP['id_question']);
+                            $score = $score - $sous;
+                            $cursor++;
+                        }
+                        elseif ($q != $dataP['id_question']) {
+                            $q = $dataP['id_question'];
+                            $score--;
+                        }
                     }
+                    else
+                        $score--;
                 }
-                elseif($dataP['Multiple'] == 1) {
-                    if($q != $dataP['id_question']) {
-                        $q = $dataP['id_question'];
-                        $score = $score - compare_qcm($rep[$cursor], $dataP['id_question']);
-                        $cursor++;
+                else {
+                    $idquestion = 0;
+                    if ($idquestion != $dataP['id_question']){
+                        $idquestion = $dataP['id_question'];
+                        $score--;
                     }
                 }
             }

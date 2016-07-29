@@ -338,6 +338,8 @@ function compare_qcm($reponses, $id_question) {
 			return 1;
 		$cursor++;
 	}
+	if (isset($correct[$cursor]))
+		return 1;
 	return 0;
 }
 
@@ -352,6 +354,11 @@ function nbquestion_idtest($id_test) {
 }
 
 function getidquestion_idrep($id_rep){
+	if (is_array($id_rep)){
+		$id = $id_rep[0];
+		$SQL = "SELECT id_question as id FROM reponse WHERE id_reponse='$id'";
+		return parcoursRs(SQLSelect($SQL));
+	}
 	$SQL = "SELECT id_question as id FROM reponse WHERE id_reponse='$id_rep'";
 	return parcoursRs(SQLSelect($SQL));
 }

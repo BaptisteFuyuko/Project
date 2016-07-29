@@ -52,12 +52,13 @@ $date = getdate_exe($_GET['id'])[0]['Date_exe'];
             <h2> <?php echo 'Passé par ' . $cand[0]['Prenom'] . ' ' . $cand[0]['Nom'] . ' le ' . $date; ?> </h2>
         </div>
         <div class="col-sm-6">
-            <h1 id="score"> <?php echo $score[0]['Score'] . ' sur 20' ?> </h1>
+            <h1 id="score">Note : <?php echo $score[0]['Score'] . ' sur 20' ?> </h1>
         </div>
         <div class="col-sm-12" style="overflow: auto; max-height: 70vh !important;">
             <?php
             $p = getquestionreponse_idresult($id);
-            $idquestion = getquestion_idtest($id);
+            $id_test = getidtestfromresult($id)[0]['id'];
+            $idquestion = getquestion_idtest($id_test);
             $i = 0;
             $cursrep = 0;
             foreach ($p as $dataP) {
