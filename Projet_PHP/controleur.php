@@ -292,6 +292,104 @@ if ($action = valider("action", 'POST') OR $action = valider("action", 'GET'))
                 rediriger("index.php","page=FT&id=$id_result&ERR=false");
             rediriger("index.php","page=RT&id=$id_result");
             break;
+        
+        case 'ajoutTest' :
+            $nom = $_POST['nom'];
+            $cat = $_POST['cat'];
+            $id_test = create_test($nom, $cat);
+            $flag_juste = 0;
+            foreach ($_POST as $cle => $data) {
+                if ($cle != 'nom' AND $cle != 'cat' AND $cle != 'action') {
+                    if (!strstr($cle,'-'))
+                        $id_question = add_question($data, $id_test);
+                    else {
+                        $first_char = preg_split("/-/", $cle)[0];
+                        if ($first_char == 'J')
+                            $flag_juste = 1;
+                        elseif ($first_char == 'M')
+                                set_multiple($id_question);
+                        else {
+                                add_reponse($data, $id_question, $flag_juste);
+                                $flag_juste = 0;
+                        }
+                    }
+                }
+            }
+            rediriger("index.php","page=LT");
+            break;
+        
+        case 'modifTest' :
+            $nom = $_POST['nom'];
+            $cat = $_POST['cat'];
+            $id_test = $_POST['id'];
+            update_test($nom, $cat, $id_test);
+            $flag_juste = 0;
+            $flag_old_question = 0;
+            $flag_old_reponse = 0;
+            $old_questions = get_old_questions($id_test);
+            $i = 0;
+            $q = 0;
+            foreach ($_POST as $cle => $data){
+                if ($cle != 'nom' AND $cle != 'cat' AND $cle != 'action'){
+                    $varchar = preg_split("/-/", $cle);
+                    if ($varchar[0] == 'O'){
+                        if ($varchar[1] == 'Q') {
+                            $flag_old_question = 1;
+                            $id_question = $varchar[2];
+                            $old_reponses = get_old_reponses($id_question);
+                        }
+                        else {
+                            $flag_old_reponse = 1;
+                            $id_reponse = $varchar[2];
+                        }
+                    }
+                    if ($flag_old_reponse == 0){
+                        while (isset($old_reponses[$q]['id_reponse'])){
+                            //del_reponse($old_reponses[$q]['id_reponse']);
+                            $q++;
+                        }
+                    }
+                    if (!strstr($cle,'-')) {
+                        if ($flag_old_question == 0)
+                            $id_question = add_question($data, $id_test);
+                        else {
+                            while (isset($old_questions[$i]['id_question']) AND $id_question != $old_questions[$i]['id_question']){
+                                //del_question($old_questions[$i]['id_question']);
+                                $i++;
+                            }
+                            update_question($data, $id_question);
+                            $flag_old_question = 0;
+                        }
+                    }
+                    if ($flag_old_question == 0) {
+                        while (isset($old_questions[$i]['id_question'])) {
+                            //del_question($old_questions[$i]['id_question']);
+                            $i++;
+                        }
+                    }
+                    elseif ($varchar[0] == 'M')
+                        set_multiple($id_question);
+                    elseif ($varchar[0] == 'J')
+                        $flag_juste = 1;
+                    elseif ($varchar[0] != 'O' AND strstr($cle, '-')) {
+                        if ($flag_old_reponse == 0){
+                            add_reponse($data, $id_question, $flag_juste);
+                            $flag_juste = 0;
+                        }
+                        else {
+                            while(isset($old_reponses[$q]['id_reponse']) AND $id_reponse != $old_reponses[$q]['id_reponse']){
+                                //del_reponse($old_reponses[$q]['id_reponse']);
+                                $q++;
+                            }
+                            update_reponse($data, $id_reponse, $flag_juste);
+                            $flag_juste = 0;
+                            $flag_old_reponse = 0;
+                        }
+                    }
+                }
+            }
+            rediriger("index.php","page=LT");
+            break;
     }
 }
 ?>

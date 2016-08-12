@@ -676,4 +676,99 @@ function list_test_cat($cat){
 	$SQL = "SELECT Nom, id_test as id FROM test WHERE Categorie = '$cat'";
 	return parcoursRs(SQLSelect($SQL));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function create_test($nom, $cat){
+	$SQL = "INSERT INTO test(Nom, Categorie) VALUES ('$nom', '$cat')";
+	return SQLInsert($SQL);
+}
+
+function add_question($intitule, $id_test){
+	$SQL = "INSERT INTO question(Intitule, id_test, Multiple) VALUES ('$intitule', '$id_test', 0)";
+	return SQLInsert($SQL);
+}
+
+function set_multiple($id_question){
+	$SQL = "UPDATE question SET Multiple = 1 WHERE id_question ='$id_question'";
+	SQLUpdate($SQL);
+}
+
+function add_reponse($intitule, $id_question, $flag_juste){
+	$SQL = "INSERT INTO reponse(Intitule, Juste, id_question) VALUES ('$intitule', '$flag_juste', '$id_question')";
+	SQLInsert($SQL);
+}
+
+function getinfostest($id){
+	$SQL = "SELECT Nom, Categorie FROM test WHERE id_test = '$id'";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function getquestionreponsejuste_idtest($idtest){
+	$SQL = "SELECT reponse.Juste as Juste, question.id_question as id, reponse.id_reponse as id_rep, question.Intitule as Intitule_Question, reponse.Intitule as Intitule_reponse, question.Multiple as Multiple
+			FROM question, reponse
+			WHERE question.id_test = '$idtest'
+			AND reponse.id_question = question.id_question
+			ORDER BY reponse.id_question";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function update_test($nom, $cat, $id_test){
+	$SQL = "UPDATE test SET Nom = '$nom', Categorie = '$cat' WHERE id_test = '$id_test'";
+	SQLUpdate($SQL);
+}
+
+function update_question($data, $id_question){
+	$SQL = "UPDATE question SET Intitule = '$data' WHERE id_question = '$id_question'";
+	SQLUpdate($SQL);
+}
+
+function update_reponse($data, $id_reponse, $flag_juste){
+	$SQL = "UPDATE reponse SET Intitule = '$data', Juste = '$flag_juste' WHERE id_reponse = '$id_reponse'";
+	SQLUpdate($SQL);
+}
+
+function get_old_questions($id){
+	$SQL = "SELECT id_question FROM question WHERE id_test = '$id'";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function get_old_reponses($id){
+	$SQL = "SELECT id_reponse FROM reponse WHERE id_question = '$id'";
+	return parcoursRs(SQLSelect($SQL));
+}
+
+function del_question($id){
+	$SQL = "DELETE FROM reponse WHERE id_question = '$id'";
+	SQLDelete($SQL);
+	$SQL = "DELETE FROM question WHERE id_question = '$id'";
+	SQLDelete($SQL);
+}
+
+function del_reponse($id){
+	$SQL = "DELETE FROM reponse WHERE id_reponse = '$id'";
+	SQLDelete($SQL);
+}
 ?>

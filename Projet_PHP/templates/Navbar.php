@@ -179,7 +179,7 @@
             echo '<ul class="nav nav-pills nav-stacked collapse" id="cat' . $i . '">';
             $test = list_test_cat($dataP['Categorie']);
             foreach ($test as $dataT) {
-                echo '<li><a href="index.php?page=MT">' . $dataT['Nom'] . '</a></li>';
+                echo '<li><a href="index.php?page=MT&id=' . $dataT['id'] . '">' . $dataT['Nom'] . '</a></li>';
             }
             echo '</ul>';
             echo '</li>';

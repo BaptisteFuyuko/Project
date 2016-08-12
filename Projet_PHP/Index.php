@@ -24,6 +24,7 @@ $pagesOK['RT'] = 'templates/resultat.php';
 $pagesOK['T'] = 'templates/test.php';
 $pagesOK['FT'] = 'templates/fin_test.php';
 $pagesOK['AT'] = 'templates/ajouter_test.php';
+$pagesOK['MT'] = 'templates/modif_test.php';
 
 //Page par defaut
 if (valider('connecte','SESSION'))

@@ -4,25 +4,107 @@ include("Navbar.php");
 
 <script>
     $(document).ready(function(){
-        $("#add_reponse").click(function(){
+
+        $(".bloc_questionnaire").on('click', '.add_reponse', function(){
             var question = $(this).attr('class');
             question = question.split(" ")[2];
             var id_question = question.split("-")[1];
-            var last_rep = $(".q" + id_question + ":last").attr('class');
-            var rep = last_rep.split(" ")[3];
-            rep++;
+            var rep = 1;
+            if ($(".q" + id_question).length){
+                var last_rep = $(".q" + id_question + ":last").attr('class');
+                rep = last_rep.split(" ")[3];
+                rep++;
+            }
+            $(this).parent()
+                .before('<div class="col-sm-12 rep q' + id_question + ' ' + rep + '"><div>');
             $(".q" + id_question + ":last")
-                .after('<div class="col-sm-12 rep q1 ' + rep + '"><div>');
-            $(".q" + id_question + ":last")
-                .html('<label class="control-label col-sm-1" for="J1-' + rep + '">Juste:</label>')
-                .append('<div class="col-sm-1"><input type="checkbox" class="form-control" name="J1-' + rep + '" id="J1-' + rep + '"/></div>')
-                .append('<label class="control-label col-sm-1" for="R1-' + rep + '">Réponse:</label>')
-                .append('<div class="col-sm-8 rep"><input type="text" class="form-control" name="1-' + rep + '" id="R1-' + rep + '" placeholder="Intitulé de la réponse"></div>')
+                .html('<label class="control-label col-sm-1" for="J' + id_question + '-' + rep + '">Juste:</label>')
+                .append('<div class="col-sm-1"><input type="checkbox" class="form-control" name="J-' + id_question + '-' + rep + '" id="J' + id_question + '-' + rep + '" value="J-' + id_question + '-' + rep + '" id="J' + id_question + '-' + rep + '"/></div>')
+                .append('<label class="control-label col-sm-1" for="R' + id_question + '-' + rep + '">Réponse:</label>')
+                .append('<div class="col-sm-8 rep"><input type="text" class="form-control" name="' + id_question + '-' + rep + '" id="R' + id_question + '-' + rep + '" placeholder="Intitulé de la réponse"></div>')
                 .append('<div class="col-sm-1"><span class="glyphicon glyphicon-remove rmreponse"></span></div>');
         });
 
-        $(".rmreponse").click(function(){
+        $("#add_question").click(function(){
+            var id_question = 1;
+            if ($(".questionnaire").length) {
+                id_question = $(".questionnaire:last").parent().attr("id");
+                id_question++;
+            }
+            $(this).parent()
+                .before('<div class="col-sm-12" id="' + id_question + '"></div>');
+            $("#" + id_question)
+                .html('<div class="col-sm-2"></div>')
+                .append('<div class="form-group questionnaire col-sm-8"></div>');
+            $("#" + id_question + " > .questionnaire")
+                .html('<div class="col-sm-12 head"></div>');
+            $("#" + id_question + " > .questionnaire > .head")
+                .html('<div class="col-sm-1"></div>'+
+                    '<div class="col-sm-10">Question ' + id_question + ' :</div>'+
+                    '<div class="col-sm-1"><span class="glyphicon glyphicon-remove rmquestion"></span></div>');
+            $("#" + id_question + " > .questionnaire")
+                .append(
+                    '<div class="col-sm-12 question ' + id_question + '">' +
+                        '<label class="control-label col-sm-1" for="q' + id_question + '">Intitulé:</label>' +
+                        '<div class="col-sm-9">' +
+                            '<input type="text" class="form-control" name="' + id_question + '" id="q' + id_question + '" placeholder="Intitulé de la question">' +
+                        '</div>' +
+                        '<label class="control-label col-sm-1" for="m' + id_question + '">QCM :</label>' +
+                        '<div class="col-sm-1">' +
+                            '<input type="checkbox" class="form-control" name="M-' + id_question + '" id="m' + id_question + '" value="M-' + id_question + '"/>' +
+                        '</div>' +
+                    '</div>'
+                )
+                .append(
+                    '<div class="col-sm-12 rep q' + id_question + ' 1">' +
+                        '<label class="control-label col-sm-1" for="J' + id_question + '-1">Juste:</label>' +
+                        '<div class="col-sm-1">' +
+                            '<input type="checkbox" class="form-control" name="J-' + id_question + '-1" id="J' + id_question + '-1" value="J-' + id_question + '-1"/>' +
+                        '</div>' +
+                        '<label class="control-label col-sm-1" for="R' + id_question + '-1">Réponse:</label>' +
+                        '<div class="col-sm-8">' +
+                            '<input type="text" class="form-control" name="' + id_question + '-1" id="R' + id_question + '-1" placeholder="Intitulé de la réponse">' +
+                        '</div>' +
+                        '<div class="col-sm-1"><span class="glyphicon glyphicon-remove rmreponse"></span></div>' +
+                    '</div>'
+                )
+                .append(
+                    '<div class="col-sm-12 rep q' + id_question + ' 2">' +
+                        '<label class="control-label col-sm-1" for="J' + id_question + '-2">Juste:</label>' +
+                        '<div class="col-sm-1">' +
+                            '<input type="checkbox" class="form-control" name="J-' + id_question + '-2" id="J' + id_question + '-2" value="J-' + id_question + '-2"/>' +
+                        '</div>' +
+                        '<label class="control-label col-sm-1" for="R' + id_question + '-2">Réponse:</label>' +
+                        '<div class="col-sm-8 rep">' +
+                            '<input type="text" class="form-control" name="' + id_question + '-2" id="R' + id_question + '-2" placeholder="Intitulé de la réponse">' +
+                        '</div>' +
+                        '<div class="col-sm-1"><span class="glyphicon glyphicon-remove rmreponse"></span></div>' +
+                    '</div>'
+                )
+                .append(
+                    '<div class="col-sm-12">' +
+                        '<div class="col-sm-3"></div>' +
+                        '<div class="col-sm-6 add q-' + id_question + ' add_reponse" > Ajouter une réponse </div>' +
+                    '</div>'
+                );
+        });
+
+        $(".bloc_questionnaire").on('click', '.rmreponse', function(){
             $(this).parent().parent().remove();
+        });
+
+        $(".bloc_questionnaire").on('click', '.rmquestion', function(){
+            var id_del = $(this).parent().parent().parent().parent().attr('id');
+            $(this).parent().parent().parent().parent().remove();
+            id_del++;
+            id_del--;
+            var id_next = id_del + 1;
+            while ($("#" + id_next).length) {
+                $("#" + id_next + " > .questionnaire > .head > .col-sm-10").text('Question ' + id_del + ' :');
+                $("#" + id_next).attr("id", id_del);
+                id_del++;
+                id_next++;
+            }
         });
     });
 </script>
@@ -90,7 +172,7 @@ include("Navbar.php");
             <h1>Ajout d'un nouveau test</h1>
         </div>
         <div class="col-sm-12" style="overflow: auto; max-height: 70vh !important;">
-            <form class="form-horizontal" role="form" method="post" action="controleur.php" style="
+            <form name="form_test" class="form-horizontal" role="form" method="post" action="controleur.php" style="
         max-height: 70vh !important;
         overflow: auto;
         overflow-x: hidden;
@@ -114,7 +196,7 @@ include("Navbar.php");
 
                 <div class="col-sm-2"></div>
                 <h2 class="col-sm-10">Questionnaire :</h2>
-                <div class="col-sm-12">
+                <div class="col-sm-12 bloc_questionnaire">
                     <div class="col-sm-12" id="1">
                         <div class="col-sm-2"></div>
                         <div class="form-group questionnaire col-sm-8">
@@ -131,14 +213,14 @@ include("Navbar.php");
                                 </div>
                                 <label class="control-label col-sm-1" for="m1">QCM :</label>
                                 <div class="col-sm-1">
-                                    <input type="checkbox" class="form-control" name="M-1" id="m1"/>
+                                    <input type="checkbox" class="form-control" name="M-1" id="m1" value="M-1"/>
                                 </div>
                             </div>
 
                             <div class="col-sm-12 rep q1 1">
                                 <label class="control-label col-sm-1" for="J1-1">Juste:</label>
                                 <div class="col-sm-1">
-                                    <input type="checkbox" class="form-control" name="J-1-1" id="J1-1"/>
+                                    <input type="checkbox" class="form-control" name="J-1-1" id="J1-1" value="J-1-1"/>
                                 </div>
                                 <label class="control-label col-sm-1" for="R1-1">Réponse:</label>
                                 <div class="col-sm-8">
@@ -150,7 +232,7 @@ include("Navbar.php");
                             <div class="col-sm-12 rep q1 2">
                                 <label class="control-label col-sm-1" for="J1-2">Juste:</label>
                                 <div class="col-sm-1">
-                                    <input type="checkbox" class="form-control" name="J-1-2" id="J1-2"/>
+                                    <input type="checkbox" class="form-control" name="J-1-2" id="J1-2" value="J-1-2"/>
                                 </div>
                                 <label class="control-label col-sm-1" for="R1-2">Réponse:</label>
                                 <div class="col-sm-8 rep">
@@ -159,19 +241,22 @@ include("Navbar.php");
                                 <div class="col-sm-1"><span class="glyphicon glyphicon-remove rmreponse"></span></div>
                             </div>
 
-                            <div class="col-sm-3"></div>
-                            <div class="col-sm-6 add q-1" id="add_reponse"> Ajouter une réponse </div>
+                            <div class="col-sm-12">
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-6 add q-1 add_reponse"> Ajouter une réponse </div>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="col-sm-3"></div>
-                    <div class="col-sm-6 add" id="add_question"> Ajouter une question </div>
+                    <div class="col-sm-12">
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-6 add" id="add_question"> Ajouter une question </div>
+                    </div>
                 </div>
 
                 <div class="form-actions col-sm-12">
                     <div class="col-sm-5"></div>
                     <div class="col-sm-7">
-                        <button type="submit" class="btn btn-default" style="color: #ef4527; border: 1px #888888 solid;" name="action" value="ajoutTest">Valider</button>
+                        <button onClick="document.form_test.submit();" class="btn btn-default" style="color: #ef4527; border: 1px #888888 solid;" name="action" value="ajoutTest">Valider</button>
                         <a href="index.php?page=LT"><button type="button" class="btn btn-default" style="color: #ef4527; background-color: white; border: 1px #888888 solid;"> Annuler </button></a>
                     </div>
                 </div>
